@@ -348,3 +348,104 @@ ps aux | grep -E "(kafka|zookeeper)"
 
 # Переконуємося що порти вільні
 netstat -tln | grep -E "(2181|9092)"
+
+
+
+# KAFKA + CASSANDRA
+=================================
+
+Файли проекту 
+Основні скрипти
+init_schema.py – створює keyspace energy_kafka_db у Cassandra та всі необхідні таблиці для зберігання енергетичних даних. Перевіряє існування таблиць і створює їх лише за потреби.
+cassandra_analytics.py – приклади аналітичних запитів до Cassandra (агрегація, перевірка TTL, робота з таблицями для часових рядів).
+simple_producer.py – базовий Kafka Producer, що відправляє тестові повідомлення у заданий топік.
+simple_consumer.py – простий Kafka Consumer, що читає повідомлення з топіка та виводить у консоль.
+enhanced_consumer.py – розширений Kafka Consumer, який інтегрує дані з топіка у Cassandra, збереження відбувається у таблиці часових рядів.
+
+Тести
+test_cassandra.py – перевіряє підключення до Cassandra та базові запити (створення, вставка, читання).
+test_integration.py – інтеграційний тест: Kafka → Consumer → Cassandra, перевіряє наскрізний потік даних.
+test_robust_consumer.py – тестує надійність Consumer при помилках (відновлення з’єднання, повторна обробка).
+test_simple_consumer.py – юніт-тест для simple_consumer.py, перевіряє правильність читання повідомлень.
+test_simple_producer.py – юніт-тест для simple_producer.py, перевіряє відправку повідомлень у топік.
+
+
+Крок 1: Встановлення Apache Cassandra
+macOS (Homebrew):
+brew install cassandra
+
+# Запуск як сервіс
+brew services start cassandra
+
+# Перевірка
+cqlsh localhost 9042
+
+
+Ubuntu/Linux:
+bash# Додавання репозиторію
+echo "deb https://debian.cassandra.apache.org 41x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+curl https://downloads.apache.org/cassandra/KEYS | sudo apt-key add -
+# Встановлення
+sudo apt update
+sudo apt install cassandra
+# Запуск
+sudo systemctl start cassandra
+sudo systemctl enable cassandra
+# Перевірка
+cqlsh
+
+
+Windows:
+cmdREM Завантажте з https://cassandra.apache.org/download/
+REM Розпакуйте в C:\cassandra
+cd C:\cassandra\bin
+cassandra.bat
+
+
+Крок 2: Налаштування Python залежностей
+pip install cassandra-driver==3.29.1
+pip install pandas==2.1.4
+pip install matplotlib==3.8.2
+pip install numpy==1.26.2
+
+# Або встановлюємо всі залежності одразу
+pip install -r requirements.txt
+Оновлений requirements.txt:
+kafka-python==2.0.2
+confluent-kafka==2.3.0
+cassandra-driver==3.29.1
+avro==1.11.3
+requests==2.31.0
+python-dotenv==1.0.0
+matplotlib==3.8.2
+pandas==2.1.4
+numpy==1.26.2
+
+Крок 3: Створення схеми Cassandra
+python3 data/init_schema.py
+
+Крок 4: Тестування підключення
+python3 test_cassandra_connection.py
+
+Крок 5: Запуск інтегрованої системи
+Термінал 1 - Kafka (якщо ще не запущено):
+cd kafka
+./bin/zookeeper-server-start.sh config/zookeeper.properties
+
+Термінал 2 - Kafka Broker:
+cd kafka
+./bin/kafka-server-start.sh config/server.properties
+
+Термінал 3 - Kafka Producer:
+bash
+python scripts/simple_producer.py
+
+Термінал 4 - Enhanced Consumer з Cassandra:
+python scripts/enhanced_consumer.py
+
+Термінал 5 - 
+Комплексне тестування
+python test_integration.py
+
+Аналітика та звітність
+python3 scripts/cassandra_analytics.py

@@ -1,0 +1,8 @@
+cluster_name: 'Energy System Cluster'
+num_tokens: 256
+data_file_directories:
+    - /opt/homebrew/var/lib/cassandra/data
+commitlog_directory: /opt/homebrew/var/lib/cassandra/commitlog
+saved_caches_directory: /opt/homebrew/var/lib/cassandra/saved_caches
+
+
