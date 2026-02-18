@@ -452,5 +452,5 @@ python3 scripts/cassandra_analytics.py
 
 ## Про проєкт
   Розроблено для дисципліни Проєктування систем з розподіленими базами даних [Кафедри ЦТЕ КПІ](https://dte.kpi.ua)
-  
+  Детально про дисципліну в силабусі http://dte.kpi.ua/wp-content/uploads/2025/11/2025-26-ochna-mp-poliahushko-proekt-system-z-rbd.pdf 
   Детальніше про навчання: https://dte.kpi.ua
