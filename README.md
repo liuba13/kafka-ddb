@@ -449,3 +449,8 @@ python test_integration.py
 
 Аналітика та звітність
 python3 scripts/cassandra_analytics.py
+
+## Про проєкт
+  Розроблено для дисципліни Проєктування систем з розподіленими базами даних [Кафедри ЦТЕ КПІ](https://dte.kpi.ua)
+  
+  Детальніше про навчання: https://dte.kpi.ua
